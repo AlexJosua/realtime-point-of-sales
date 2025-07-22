@@ -17,7 +17,7 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
           <div className="bg-yellow-600 flex p-2 items-center justify-center rounded-md">
             <Coffee className="size-4" />
           </div>
-          WPU Cafe
+          Alex Cafe
         </div>
         {children}
       </div>
