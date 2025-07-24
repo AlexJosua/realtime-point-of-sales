@@ -19,8 +19,8 @@ export default function FormInput<T extends FieldValues>({
   form: UseFormReturn<T>;
   name: Path<T>;
   label: string;
-  placeholder: string;
-  type: string;
+  placeholder?: string;
+  type?: string;
 }) {
   return (
     <FormField
