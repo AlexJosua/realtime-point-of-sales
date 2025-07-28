@@ -10,7 +10,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
-
 import {
   INITIAL_LOGIN_FORM,
   INITIAL_STATE_LOGIN_FORM,
@@ -21,7 +20,6 @@ import { startTransition, useActionState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { login } from "../actions";
 import { Loader2 } from "lucide-react";
-import { toast } from "sonner";
 
 export default function Login() {
   const form = useForm<LoginForm>({
@@ -47,9 +45,6 @@ export default function Login() {
 
   useEffect(() => {
     if (loginState?.status === "error") {
-      toast.error("Login Failed", {
-        description: loginState.errors?._form?.[0],
-      });
       startTransition(() => {
         loginAction(null);
       });
@@ -60,7 +55,7 @@ export default function Login() {
     <Card>
       <CardHeader className="text-center">
         <CardTitle className="text-xl">Welcome</CardTitle>
-        <CardDescription>Login to Access All features</CardDescription>
+        <CardDescription>Login to access all features</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -69,7 +64,7 @@ export default function Login() {
               form={form}
               name="email"
               label="Email"
-              placeholder="Insert Email Here"
+              placeholder="Insert email here"
               type="email"
             />
             <FormInput
@@ -80,7 +75,7 @@ export default function Login() {
               type="password"
             />
             <Button type="submit">
-              {isPendingLogin ? <Loader2 className="animate-spin" /> : "login"}
+              {isPendingLogin ? <Loader2 className="animate-spin" /> : "Login"}
             </Button>
           </form>
         </Form>
