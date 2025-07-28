@@ -1,54 +1,53 @@
 import DialogDelete from "@/components/common/dialog-delete";
 import { startTransition, useActionState, useEffect } from "react";
-import { deleteMenu } from "../action";
 import { INITIAL_STATE_ACTION } from "@/constants/general-constants";
 import { toast } from "sonner";
-import { Menu } from "@/validations/menu-validations";
+import { Table } from "@/validations/table-validations";
+import { deleteTable } from "../actions";
 
-export default function DialogDeleteMenu({
+export default function DialogDeleteTable({
   open,
   refetch,
   currentData,
   handleChangeAction,
 }: {
   refetch: () => void;
-  currentData?: Menu;
+  currentData?: Table;
   open: boolean;
   handleChangeAction: (open: boolean) => void;
 }) {
-  const [deleteMenuState, deleteMenuAction, isPendingDeleteMenu] =
-    useActionState(deleteMenu, INITIAL_STATE_ACTION);
+  const [deleteTableState, deleteTableAction, isPendingDeleteTable] =
+    useActionState(deleteTable, INITIAL_STATE_ACTION);
 
   const onSubmit = () => {
     const formData = new FormData();
     formData.append("id", currentData!.id as string);
-    formData.append("image_url", currentData!.image_url as string);
     startTransition(() => {
-      deleteMenuAction(formData);
+      deleteTableAction(formData);
     });
   };
 
   useEffect(() => {
-    if (deleteMenuState?.status === "error") {
-      toast.error("Delete Menu Failed", {
-        description: deleteMenuState.errors?._form?.[0],
+    if (deleteTableState?.status === "error") {
+      toast.error("Delete Table Failed", {
+        description: deleteTableState.errors?._form?.[0],
       });
     }
 
-    if (deleteMenuState?.status === "success") {
-      toast.success("Delete Menu Success");
+    if (deleteTableState?.status === "success") {
+      toast.success("Delete Table Success");
       handleChangeAction?.(false);
       refetch();
     }
-  }, [deleteMenuState]);
+  }, [deleteTableState]);
 
   return (
     <DialogDelete
       open={open}
       onOpenChange={handleChangeAction}
-      isLoading={isPendingDeleteMenu}
+      isLoading={isPendingDeleteTable}
       onSubmit={onSubmit}
-      title="Menu"
+      title="Table"
     />
   );
 }
