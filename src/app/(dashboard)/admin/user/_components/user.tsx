@@ -63,7 +63,7 @@ export default function UserManagement() {
     return (users?.data || []).map((user, index) => {
       return [
         currentLimit * (currentPage - 1) + index + 1,
-        user.id,
+        // user.id,
         user.name,
         user.role,
         <DropdownAction
