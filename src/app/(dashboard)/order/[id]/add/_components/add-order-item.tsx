@@ -10,9 +10,11 @@ import { toast } from "sonner";
 import CardMenu from "./card-menu";
 import LoadingCardMenu from "./loading-card-menu";
 import CartSection from "./cart";
-import { useState } from "react";
+import { startTransition, useActionState, useState } from "react";
 import { Cart } from "@/types/order";
 import { Menu } from "@/validations/menu-validations";
+import { addOrderItem } from "../../../action";
+import { INITIAL_STATE_ACTION } from "@/constants/general-constants";
 
 export default function AddOrderItem({ id }: { id: string }) {
   const supabase = createClient();
@@ -116,6 +118,24 @@ export default function AddOrderItem({ id }: { id: string }) {
     }
   };
 
+  const [addOrderItemState, addOrderItemAction, isPendingAddOrderItem] =
+    useActionState(addOrderItem, INITIAL_STATE_ACTION);
+
+  const handleOrder = async () => {
+    const data = {
+      order_id: id,
+      items: carts.map((item) => ({
+        order_id: order?.id ?? "",
+        ...item,
+        status: "pending",
+      })),
+    };
+
+    startTransition(() => {
+      addOrderItemAction(data);
+    });
+  };
+
   return (
     <div className="flex flex-col lg:flex-row gap-4 w-full">
       <div className="space-y-4 lg:w-2/3">
@@ -162,6 +182,8 @@ export default function AddOrderItem({ id }: { id: string }) {
           carts={carts}
           setCarts={setCarts}
           onAddToCart={handleAddToCart}
+          isLoading={isPendingAddOrderItem}
+          onOrder={handleOrder}
         />
       </div>
     </div>
