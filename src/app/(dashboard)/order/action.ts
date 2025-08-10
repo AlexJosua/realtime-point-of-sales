@@ -5,7 +5,8 @@ import { FormState } from "@/types/general";
 import { Cart, OrderFormState } from "@/types/order";
 import { orderFormSchema } from "@/validations/order-validations";
 import { redirect } from "next/navigation";
-import { success } from "zod";
+import midtrans from "midtrans-client";
+import { environment } from "@/configs/environment";
 
 export async function createOrder(
   prevState: OrderFormState,
@@ -163,5 +164,57 @@ export async function updateStatusOrderitem(
 
   return {
     status: "success",
+  };
+}
+
+export async function generatePayment(
+  prevState: FormState,
+  formData: FormData
+) {
+  const supabase = await createClient();
+  const orderId = formData.get("id");
+  const gross_amount = formData.get("gross_amount");
+  const customer_name = formData.get("customer_name");
+
+  const snap = new midtrans.Snap({
+    isProduction: false,
+    serverKey: environment.MIDTRANS_SERVER_KEY!,
+  });
+
+  const parameter = {
+    transaction_details: {
+      order_id: `${orderId}`,
+      gross_amount: parseFloat(gross_amount as string),
+    },
+    customer_details: {
+      first_name: customer_name,
+    },
+  };
+
+  const result = await snap.createTransaction(parameter);
+
+  if (result.error_messages) {
+    return {
+      status: "error",
+      errors: {
+        ...prevState,
+        _form: [result.error_messages],
+      },
+      data: {
+        payment_token: "",
+      },
+    };
+  }
+
+  await supabase
+    .from("orders")
+    .update({ payment_token: result.token })
+    .eq("order_id", orderId);
+
+  return {
+    status: "success",
+    data: {
+      payment_token: `${result.token}`,
+    },
   };
 }
