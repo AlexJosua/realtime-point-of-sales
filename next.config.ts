@@ -6,7 +6,7 @@ const nextConfig: NextConfig = {
       bodySizeLimit: "10mb",
     },
   },
-  // devIndicators: false,
+  devIndicators: false,
   images: {
     domains: [
       "https://mucwiodjmnwamflcqiyl.storage.supabase.co",
