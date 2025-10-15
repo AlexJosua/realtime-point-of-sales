@@ -2,12 +2,15 @@ import { Menu } from "@/validations/menu-validations";
 import { useMemo } from "react";
 
 export function usePricing(
-  ordermenu: { menus: Menu; quantity: number }[] | null | undefined
+  ordermenu:
+    | { menus: Menu; quantity: number; nominal: number }[]
+    | null
+    | undefined
 ) {
   const totalPrice = useMemo(() => {
     let total = 0;
     ordermenu?.forEach((item) => {
-      total += item.menus.price * item.quantity;
+      total += item.nominal;
     });
     return total;
   }, [ordermenu]);
